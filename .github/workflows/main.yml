@@ -10,9 +10,11 @@ jobs:
       - name: Preparando Ambiente (Download de Dependências)
         run: |
           sudo apt update
-          # Instala o Chrome Remote Desktop e o ambiente desktop XFCE
           wget dl.google.com
-          sudo apt install --assume-yes ./chrome-remote-desktop_current_amd64.deb
+          # Use dpkg para instalar o pacote .deb e resolva dependências
+          sudo dpkg -i chrome-remote-desktop_current_amd64.deb
+          sudo apt install -f --assume-yes
+          # Instale os ambientes de desktop necessários
           sudo apt install --assume-yes xfce4 desktop-base xfce4-terminal xscreensaver
           
       - name: Configurando Desktop e Usuário
