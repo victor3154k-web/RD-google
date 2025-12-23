@@ -11,28 +11,25 @@ jobs:
         run: |
           sudo apt update
           wget dl.google.com
-          # Use dpkg para instalar o pacote .deb e resolva dependências
+          # INSTALACAO CORRIGIDA: Usa dpkg para instalar o pacote .deb
           sudo dpkg -i chrome-remote-desktop_current_amd64.deb
+          # CORRECAO DE ERRO: Usa apt install -f para corrigir dependencias automaticamente (exit code 100)
           sudo apt install -f --assume-yes
-          # Instale os ambientes de desktop necessários
+          # Instala os ambientes de desktop necessarios
           sudo apt install --assume-yes xfce4 desktop-base xfce4-terminal xscreensaver
           
       - name: Configurando Desktop e Usuário
         run: |
-          # Define o XFCE como interface padrão
+          # Define o XFCE como interface padrao
           sudo bash -c 'echo "exec /etc/X11/Xsession /usr/bin/xfce4-session" > /etc/chrome-remote-desktop-session'
           sudo apt install nautilus expect -y
 
       - name: Iniciando Google Remote Desktop
-        env:
-          # É necessário ter o Secret "CRP" configurado nas configurações do repositório
-          CRP_TOKEN: ${{ secrets.CRP }}
         run: |
-          # O comando abaixo executa o código de autenticação que você colou no Secret
-          # O PIN padrão definido aqui é 123456
+          # EXECUCAO CORRIGIDA: Executa o secret CRP diretamente como um comando shell (evita exit code 2)
           ${{ secrets.CRP }} --pin=123456
           
       - name: Manter Ativo
         run: |
-          # Mantém o workflow rodando para a conexão não cair imediatamente
+          # Mantem o workflow rodando para a conexao nao cair imediatamente
           sleep 21600 
