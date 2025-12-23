@@ -1,0 +1,36 @@
+name: Google_Remote_Desktop_RDP
+
+on: 
+  workflow_dispatch: # Permite iniciar o RDP manualmente
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Preparando Ambiente (Download de Dependências)
+        run: |
+          sudo apt update
+          # Instala o Chrome Remote Desktop e o ambiente desktop XFCE
+          wget dl.google.com
+          sudo apt install --assume-yes ./chrome-remote-desktop_current_amd64.deb
+          sudo apt install --assume-yes xfce4 desktop-base xfce4-terminal xscreensaver
+          
+      - name: Configurando Desktop e Usuário
+        run: |
+          # Define o XFCE como interface padrão
+          sudo bash -c 'echo "exec /etc/X11/Xsession /usr/bin/xfce4-session" > /etc/chrome-remote-desktop-session'
+          sudo apt install nautilus expect -y
+
+      - name: Iniciando Google Remote Desktop
+        env:
+          # É necessário ter o Secret "CRP" configurado nas configurações do repositório
+          CRP_TOKEN: ${{ secrets.CRP }}
+        run: |
+          # O comando abaixo executa o código de autenticação que você colou no Secret
+          # O PIN padrão definido aqui é 123456
+          ${{ secrets.CRP }} --pin=123456
+          
+      - name: Manter Ativo
+        run: |
+          # Mantém o workflow rodando para a conexão não cair imediatamente
+          sleep 21600 
